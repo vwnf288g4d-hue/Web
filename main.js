@@ -266,7 +266,7 @@ revealEls.forEach(el => observer.observe(el));
 
 // ── CONTACT FORM ──────────────────────────────────────────────
 
-const CONTACT_EMAIL = 'atelier@nodisciplineart.sk';
+const CONTACT_EMAIL = 'atelier@nodisciplineart.com';
 
 document.getElementById('contactForm')?.addEventListener('submit', e => {
   e.preventDefault();
