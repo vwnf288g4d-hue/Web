@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>No Discipline Art — Košice, Slovakia</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav__logo">
+      <span class="nav__logo-main">NO DISCIPLINE</span>
+      <span class="nav__logo-sub">ART</span>
+    </div>
+    <ul class="nav__links">
+      <li><a href="#about">About</a></li>
+      <li><a href="#work">Work</a></li>
+      <li><a href="#process">Process</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+    <div class="nav__burger" id="burger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="mobile-menu" id="mobileMenu">
+    <ul>
+      <li><a href="#about" class="menu-link">About</a></li>
+      <li><a href="#work" class="menu-link">Work</a></li>
+      <li><a href="#process" class="menu-link">Process</a></li>
+      <li><a href="#contact" class="menu-link">Contact</a></li>
+    </ul>
+  </div>
+
+  <!-- Hero -->
+  <section class="hero" id="hero">
+    <canvas id="heroCanvas"></canvas>
+    <div class="hero__content">
+      <p class="hero__eyebrow">Košice · Slovakia</p>
+      <h1 class="hero__title">
+        <span class="hero__title-line">NO</span>
+        <span class="hero__title-line hero__title-line--outline">DISCIPLINE</span>
+        <span class="hero__title-line">ART</span>
+      </h1>
+      <p class="hero__sub">Metal Art · Contemporary Design · Original Handmade</p>
+      <a href="#work" class="btn btn--primary">Explore the Work</a>
+    </div>
+    <div class="hero__scroll">
+      <span>Scroll</span>
+      <div class="hero__scroll-line"></div>
+    </div>
+  </section>
+
+  <!-- Marquee -->
+  <div class="marquee">
+    <div class="marquee__track">
+      <span>Metal Art</span><span>·</span>
+      <span>Contemporary Design</span><span>·</span>
+      <span>Handmade</span><span>·</span>
+      <span>Košice</span><span>·</span>
+      <span>Slovakia</span><span>·</span>
+      <span>Metal Work</span><span>·</span>
+      <span>Original Pieces</span><span>·</span>
+      <span>Metal Art</span><span>·</span>
+      <span>Contemporary Design</span><span>·</span>
+      <span>Handmade</span><span>·</span>
+      <span>Košice</span><span>·</span>
+      <span>Slovakia</span><span>·</span>
+      <span>Metal Work</span><span>·</span>
+      <span>Original Pieces</span><span>·</span>
+    </div>
+  </div>
+
+  <!-- About -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about__grid">
+        <div class="about__left">
+          <p class="label">About</p>
+          <h2 class="section-title">Art Without<br />Boundaries</h2>
+        </div>
+        <div class="about__right">
+          <p class="about__text">
+            No Discipline Art is a Košice-based creative studio pushing the limits of metal as a medium. We believe great art follows no single rule — only raw instinct and refined craft.
+          </p>
+          <p class="about__text">
+            From sculptural installations to bespoke interior pieces, every work is conceived, shaped, and finished entirely by hand in our workshop in the heart of eastern Slovakia.
+          </p>
+          <div class="about__stats">
+            <div class="stat">
+              <span class="stat__number">100<em>%</em></span>
+              <span class="stat__label">Handmade</span>
+            </div>
+            <div class="stat">
+              <span class="stat__number">∞</span>
+              <span class="stat__label">Disciplines</span>
+            </div>
+            <div class="stat">
+              <span class="stat__number">1<em>city</em></span>
+              <span class="stat__label">Košice, SK</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3D Object -->
+    <div class="about__canvas-wrap">
+      <canvas id="aboutCanvas"></canvas>
+    </div>
+  </section>
+
+  <!-- Work / Gallery -->
+  <section class="work" id="work">
+    <div class="container">
+      <p class="label">Selected Work</p>
+      <h2 class="section-title">The Collection</h2>
+    </div>
+    <div class="work__grid">
+      <article class="work__card work__card--tall">
+        <div class="work__card-inner">
+          <div class="work__card-bg" style="background: linear-gradient(135deg,#1a1a2e,#16213e);"></div>
+          <canvas class="work__card-canvas" data-shape="torus"></canvas>
+          <div class="work__card-info">
+            <span class="work__card-tag">Sculpture</span>
+            <h3>Infinite Loop</h3>
+            <p>Welded steel, powder-coated</p>
+          </div>
+        </div>
+      </article>
+      <article class="work__card">
+        <div class="work__card-inner">
+          <div class="work__card-bg" style="background: linear-gradient(135deg,#0f0c29,#302b63);"></div>
+          <canvas class="work__card-canvas" data-shape="box"></canvas>
+          <div class="work__card-info">
+            <span class="work__card-tag">Interior</span>
+            <h3>Brutal Cube</h3>
+            <p>Raw iron, brushed finish</p>
+          </div>
+        </div>
+      </article>
+      <article class="work__card">
+        <div class="work__card-inner">
+          <div class="work__card-bg" style="background: linear-gradient(135deg,#200122,#6f0000);"></div>
+          <canvas class="work__card-canvas" data-shape="sphere"></canvas>
+          <div class="work__card-info">
+            <span class="work__card-tag">Installation</span>
+            <h3>Sphere of Silence</h3>
+            <p>Stainless steel, mirror polish</p>
+          </div>
+        </div>
+      </article>
+      <article class="work__card work__card--wide">
+        <div class="work__card-inner">
+          <div class="work__card-bg" style="background: linear-gradient(135deg,#0d0d0d,#2c2c2c);"></div>
+          <canvas class="work__card-canvas" data-shape="knot"></canvas>
+          <div class="work__card-info">
+            <span class="work__card-tag">Statement Piece</span>
+            <h3>Torsion</h3>
+            <p>Corten steel, untreated surface</p>
+          </div>
+        </div>
+      </article>
+      <article class="work__card">
+        <div class="work__card-inner">
+          <div class="work__card-bg" style="background: linear-gradient(135deg,#1c1c1c,#3d3d3d);"></div>
+          <canvas class="work__card-canvas" data-shape="cone"></canvas>
+          <div class="work__card-info">
+            <span class="work__card-tag">Design Object</span>
+            <h3>Apex</h3>
+            <p>Aluminum, anodized black</p>
+          </div>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <!-- Process -->
+  <section class="process" id="process">
+    <canvas id="processCanvas"></canvas>
+    <div class="container">
+      <p class="label label--light">Process</p>
+      <h2 class="section-title section-title--light">How We Create</h2>
+      <div class="process__steps">
+        <div class="process__step">
+          <span class="process__num">01</span>
+          <h3>Concept</h3>
+          <p>Every piece begins as a raw idea — a tension, a shape, a contradiction worth exploring in metal.</p>
+        </div>
+        <div class="process__line"></div>
+        <div class="process__step">
+          <span class="process__num">02</span>
+          <h3>Material</h3>
+          <p>We select metals for their character — the way they age, reflect, oxidise, and hold light.</p>
+        </div>
+        <div class="process__line"></div>
+        <div class="process__step">
+          <span class="process__num">03</span>
+          <h3>Craft</h3>
+          <p>Hand-cut, welded, ground and shaped in our Košice studio. No shortcuts, no machines doing our thinking.</p>
+        </div>
+        <div class="process__line"></div>
+        <div class="process__step">
+          <span class="process__num">04</span>
+          <h3>Finish</h3>
+          <p>The surface is the soul. Whether raw, polished or patinated — every finish is deliberate.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Contact -->
+  <section class="contact" id="contact">
+    <div class="container">
+      <div class="contact__grid">
+        <div class="contact__left">
+          <p class="label">Get In Touch</p>
+          <h2 class="section-title">Let's Make<br />Something Real</h2>
+          <div class="contact__info">
+            <div class="contact__info-item">
+              <span class="contact__info-label">Location</span>
+              <span class="contact__info-value">Košice, Slovakia</span>
+            </div>
+            <div class="contact__info-item">
+              <span class="contact__info-label">Instagram</span>
+              <a href="https://instagram.com/nodisciplineart" target="_blank" class="contact__info-value contact__info-value--link">@nodisciplineart</a>
+            </div>
+            <div class="contact__info-item">
+              <span class="contact__info-label">Medium</span>
+              <span class="contact__info-value">Metal · Steel · Iron · Aluminum</span>
+            </div>
+          </div>
+        </div>
+        <div class="contact__right">
+          <form class="contact__form" id="contactForm">
+            <div class="form__group">
+              <label for="name">Name</label>
+              <input type="text" id="name" name="name" placeholder="Your name" required />
+            </div>
+            <div class="form__group">
+              <label for="email">Email</label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required />
+            </div>
+            <div class="form__group">
+              <label for="message">Message</label>
+              <textarea id="message" name="message" rows="5" placeholder="Tell us about your project..." required></textarea>
+            </div>
+            <button type="submit" class="btn btn--primary btn--full">Send Message</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer__top">
+        <div class="footer__brand">
+          <span class="footer__brand-main">NO DISCIPLINE ART</span>
+          <span class="footer__brand-loc">Košice, Slovakia</span>
+        </div>
+        <a href="https://instagram.com/nodisciplineart" target="_blank" class="footer__ig">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="5"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+          @nodisciplineart
+        </a>
+      </div>
+      <div class="footer__bottom">
+        <p>&copy; 2026 No Discipline Art. All rights reserved.</p>
+        <p>Metal Art · Contemporary Design · Handmade · Košice</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="main.js"></script>
+</body>
+</html>
