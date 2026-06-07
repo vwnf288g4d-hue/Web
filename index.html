@@ -10,15 +10,15 @@
   <meta name="keywords" content="No Discipline Art, metal art, contemporary design, sculpture, Košice, Slovakia, handmade, metalwork, steel, lighting installation, atelier" />
   <meta name="author" content="No Discipline Art" />
   <meta name="theme-color" content="#0a0a0a" />
-  <link rel="canonical" href="https://www.nodisciplineart.com/" />
+  <link rel="canonical" href="https://nodisciplineart.com/" />
 
   <!-- Open Graph -->
   <meta property="og:type" content="website" />
   <meta property="og:site_name" content="No Discipline Art" />
   <meta property="og:title" content="No Discipline Art — Metal Art &amp; Contemporary Design · Košice" />
   <meta property="og:description" content="Original handmade metal art, sculpture and contemporary design from Košice, Slovakia. Art without boundaries." />
-  <meta property="og:url" content="https://www.nodisciplineart.com/" />
-  <meta property="og:image" content="https://www.nodisciplineart.com/assets/images/constellation.jpeg" />
+  <meta property="og:url" content="https://nodisciplineart.com/" />
+  <meta property="og:image" content="https://nodisciplineart.com/assets/images/constellation.jpeg" />
   <meta property="og:locale" content="en_US" />
   <meta property="og:locale:alternate" content="sk_SK" />
 
@@ -26,7 +26,7 @@
   <meta name="twitter:card" content="summary_large_image" />
   <meta name="twitter:title" content="No Discipline Art — Metal Art &amp; Contemporary Design · Košice" />
   <meta name="twitter:description" content="Original handmade metal art, sculpture and contemporary design from Košice, Slovakia." />
-  <meta name="twitter:image" content="https://www.nodisciplineart.com/assets/images/constellation.jpeg" />
+  <meta name="twitter:image" content="https://nodisciplineart.com/assets/images/constellation.jpeg" />
 
   <!-- Favicons -->
   <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
@@ -45,9 +45,9 @@
     "@type": "ProfessionalService",
     "name": "No Discipline Art",
     "description": "Metal art, sculpture, lighting installations and contemporary design, handmade in Košice, Slovakia.",
-    "url": "https://www.nodisciplineart.com/",
+    "url": "https://nodisciplineart.com/",
     "email": "atelier@nodisciplineart.com",
-    "image": "https://www.nodisciplineart.com/assets/images/mirror-loop.jpeg",
+    "image": "https://nodisciplineart.com/assets/images/mirror-loop.jpeg",
     "address": {
       "@type": "PostalAddress",
       "addressLocality": "Košice",
@@ -287,7 +287,12 @@
           </div>
         </div>
         <div class="contact__right">
-          <form class="contact__form" id="contactForm">
+          <form class="contact__form" id="contactForm"
+                action="https://api.web3forms.com/submit"
+                method="POST">
+            <input type="hidden" name="access_key" value="REPLACE_WITH_YOUR_KEY" />
+            <input type="hidden" name="subject" value="New enquiry — No Discipline Art" />
+            <input type="hidden" name="redirect" value="https://nodisciplineart.com/" />
             <div class="form__group">
               <label for="name">Name</label>
               <input type="text" id="name" name="name" placeholder="Your name" required />

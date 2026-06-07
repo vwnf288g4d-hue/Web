@@ -266,37 +266,12 @@ revealEls.forEach(el => observer.observe(el));
 
 // ── CONTACT FORM ──────────────────────────────────────────────
 
-const CONTACT_EMAIL = 'atelier@nodisciplineart.com';
-
+// Contact form submits directly to Web3Forms (action set in HTML).
+// Show a loading state while it posts.
 document.getElementById('contactForm')?.addEventListener('submit', e => {
-  e.preventDefault();
-  const form = e.target;
-  const name = form.name.value.trim();
-  const email = form.email.value.trim();
-  const message = form.message.value.trim();
-
-  // No backend on a static site — compose a message to the atelier
-  // in the visitor's own mail client, pre-filled with their details.
-  const subject = `New enquiry from ${name || 'the website'}`;
-  const body =
-    `Name: ${name}\n` +
-    `Email: ${email}\n\n` +
-    `${message}\n`;
-  const mailto = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-
-  window.location.href = mailto;
-
-  const btn = form.querySelector('button[type="submit"]');
-  const orig = btn.textContent;
-  btn.textContent = 'Opening your mail app…';
-  btn.style.borderColor = '#5cb85c';
-  btn.style.color = '#5cb85c';
-  setTimeout(() => {
-    btn.textContent = orig;
-    btn.style.borderColor = '';
-    btn.style.color = '';
-    form.reset();
-  }, 3500);
+  const btn = e.target.querySelector('button[type="submit"]');
+  btn.textContent = 'Sending…';
+  btn.disabled = true;
 });
 
 // ── CURSOR GLOW ───────────────────────────────────────────────
