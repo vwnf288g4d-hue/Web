@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="No Discipline Art">
+  <rect width="64" height="64" rx="14" fill="#0a0a0a"/>
+  <circle cx="32" cy="32" r="17" fill="none" stroke="#c9a84c" stroke-width="4"/>
+  <circle cx="32" cy="32" r="6.5" fill="#c9a84c"/>
+  <text x="32" y="56.5" text-anchor="middle" font-family="'Space Mono', monospace, sans-serif"
+        font-size="9" font-weight="700" letter-spacing="1" fill="#c9a84c" opacity="0">NDA</text>
+</svg>
