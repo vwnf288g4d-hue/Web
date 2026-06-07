@@ -516,6 +516,14 @@ img, canvas { display: block; }
   gap: 6rem;
   align-items: start;
 }
+.contact__grid--single {
+  grid-template-columns: 1fr;
+  max-width: 640px;
+}
+.contact__cta {
+  margin-top: 2.5rem;
+  display: inline-flex;
+}
 
 .contact__info {
   display: flex;

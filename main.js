@@ -266,13 +266,6 @@ revealEls.forEach(el => observer.observe(el));
 
 // ── CONTACT FORM ──────────────────────────────────────────────
 
-// Contact form submits directly to Web3Forms (action set in HTML).
-// Show a loading state while it posts.
-document.getElementById('contactForm')?.addEventListener('submit', e => {
-  const btn = e.target.querySelector('button[type="submit"]');
-  btn.textContent = 'Sending…';
-  btn.disabled = true;
-});
 
 // ── CURSOR GLOW ───────────────────────────────────────────────
 
