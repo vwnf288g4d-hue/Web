@@ -578,6 +578,148 @@ img, canvas { display: block; }
 .form__group textarea::placeholder { color: var(--text-muted); }
 
 /* ============================================================
+   SERVICES
+   ============================================================ */
+.services {
+  padding: 8rem 0;
+  background: var(--bg-2);
+  border-top: 1px solid var(--border);
+}
+.services__header { margin-bottom: 4rem; }
+
+.services__grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1px;
+  background: var(--border);
+  border: 1px solid var(--border);
+}
+
+.services__card {
+  background: var(--bg-2);
+  padding: 2.5rem 2rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  transition: background .25s;
+}
+.services__card:hover { background: var(--bg-3); }
+.services__card:hover .services__icon svg { stroke: var(--accent); }
+.services__card:hover .services__name { color: var(--accent); }
+
+.services__icon { margin-bottom: .5rem; }
+.services__icon svg {
+  width: 26px;
+  height: 26px;
+  stroke: rgba(255,255,255,.3);
+  transition: stroke .25s;
+}
+
+.services__num {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  letter-spacing: .2em;
+  color: var(--accent);
+  opacity: .5;
+}
+.services__name {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: var(--text);
+  transition: color .25s;
+  margin-top: .25rem;
+}
+.services__desc {
+  font-size: .82rem;
+  color: var(--text-muted);
+  line-height: 1.65;
+  margin-top: auto;
+  padding-top: .75rem;
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
+.lightbox {
+  position: fixed;
+  inset: 0;
+  z-index: 500;
+  background: rgba(5,5,5,.95);
+  backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .3s;
+}
+.lightbox.open { opacity: 1; pointer-events: all; }
+
+.lightbox__inner {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  max-width: min(88vw, 1100px);
+  max-height: 92vh;
+  transform: scale(.96) translateY(8px);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.lightbox.open .lightbox__inner { transform: scale(1) translateY(0); }
+
+.lightbox__img {
+  max-width: 100%;
+  max-height: 74vh;
+  object-fit: contain;
+  display: block;
+  border: 1px solid var(--border);
+}
+
+.lightbox__caption { padding: 0 .25rem; }
+.lightbox__tag {
+  font-family: var(--font-mono);
+  font-size: .6rem;
+  letter-spacing: .2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  display: block;
+  margin-bottom: .35rem;
+}
+.lightbox__title { font-size: 1.25rem; font-weight: 700; margin-bottom: .2rem; }
+.lightbox__desc { font-size: .82rem; color: var(--text-muted); }
+
+.lightbox__close {
+  position: absolute;
+  top: 1.5rem; right: 1.5rem;
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 44px; height: 44px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+  z-index: 10;
+}
+.lightbox__close:hover { color: var(--text); border-color: var(--text-muted); }
+.lightbox__close svg { width: 18px; height: 18px; }
+
+.lightbox__nav {
+  position: absolute;
+  top: 50%; transform: translateY(-50%);
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text-muted);
+  width: 48px; height: 56px;
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  transition: color .2s, border-color .2s;
+  z-index: 10;
+}
+.lightbox__nav:hover { color: var(--text); border-color: var(--text-muted); }
+.lightbox__nav svg { width: 22px; height: 22px; }
+.lightbox__prev { left: 1.5rem; }
+.lightbox__next { right: 1.5rem; }
+
+/* ============================================================
    WORKSHOP MAP
    ============================================================ */
 .workshop-map {
@@ -750,9 +892,14 @@ img, canvas { display: block; }
   .about__canvas-wrap { display: none; }
   .process__steps { flex-direction: column; gap: 2rem; }
   .process__line { display: none; }
+  .services__grid { grid-template-columns: repeat(3, 1fr); }
 }
 
 @media (max-width: 768px) {
+  .services__grid { grid-template-columns: 1fr 1fr; }
+  .lightbox__prev { left: .5rem; }
+  .lightbox__next { right: .5rem; }
+
   .nav__links { display: none; }
   .nav__burger { display: flex; }
 
@@ -779,4 +926,5 @@ img, canvas { display: block; }
 @media (max-width: 480px) {
   .about__stats { flex-direction: column; gap: 1.5rem; }
   .nav { padding: 1.25rem 1.25rem; }
+  .services__grid { grid-template-columns: 1fr; }
 }

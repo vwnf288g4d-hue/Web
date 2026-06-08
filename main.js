@@ -306,6 +306,57 @@ revealEls.forEach(el => observer.observe(el));
     .openPopup();
 })();
 
+// ── LIGHTBOX ──────────────────────────────────────────────────
+
+(function initLightbox() {
+  const overlay = document.getElementById('lightbox');
+  if (!overlay) return;
+
+  const img     = overlay.querySelector('.lightbox__img');
+  const tagEl   = overlay.querySelector('.lightbox__tag');
+  const titleEl = overlay.querySelector('.lightbox__title');
+  const descEl  = overlay.querySelector('.lightbox__desc');
+
+  const cards = [...document.querySelectorAll('.work__card-inner')];
+  let current = 0;
+
+  function show(idx) {
+    current = ((idx % cards.length) + cards.length) % cards.length;
+    const c  = cards[current];
+    const ci = c.querySelector('.work__card-img');
+    img.src            = ci.src;
+    img.alt            = ci.alt;
+    tagEl.textContent   = c.querySelector('.work__card-tag')?.textContent || '';
+    titleEl.textContent = c.querySelector('h3')?.textContent || '';
+    descEl.textContent  = c.querySelector('p')?.textContent || '';
+  }
+
+  function open(idx) {
+    show(idx);
+    overlay.classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function close() {
+    overlay.classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
+  cards.forEach((c, i) => c.addEventListener('click', () => open(i)));
+
+  overlay.querySelector('.lightbox__close').addEventListener('click', close);
+  overlay.querySelector('.lightbox__prev').addEventListener('click', e => { e.stopPropagation(); show(current - 1); });
+  overlay.querySelector('.lightbox__next').addEventListener('click', e => { e.stopPropagation(); show(current + 1); });
+  overlay.addEventListener('click', e => { if (e.target === overlay) close(); });
+
+  document.addEventListener('keydown', e => {
+    if (!overlay.classList.contains('open')) return;
+    if (e.key === 'Escape') close();
+    if (e.key === 'ArrowLeft') show(current - 1);
+    if (e.key === 'ArrowRight') show(current + 1);
+  });
+})();
+
 // ── CURSOR GLOW ───────────────────────────────────────────────
 
 const glow = document.createElement('div');
