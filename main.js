@@ -267,6 +267,45 @@ revealEls.forEach(el => observer.observe(el));
 // ── CONTACT FORM ──────────────────────────────────────────────
 
 
+// ── WORKSHOP MAP ──────────────────────────────────────────────
+
+(function initMap() {
+  const el = document.getElementById('workshopMap');
+  if (!el || !window.L) return;
+
+  // Košice city centre
+  const lat = 48.7164, lng = 21.2611;
+
+  const map = L.map(el, {
+    center: [lat, lng],
+    zoom: 14,
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: true,
+  });
+
+  // CartoDB Dark Matter tiles — matches the dark site theme
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Custom gold dot marker
+  const icon = L.divIcon({
+    className: '',
+    html: '<div class="map-marker"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -12],
+  });
+
+  L.marker([lat, lng], { icon })
+    .addTo(map)
+    .bindPopup('<strong>NDA Workshop</strong>Košice, Slovakia')
+    .openPopup();
+})();
+
 // ── CURSOR GLOW ───────────────────────────────────────────────
 
 const glow = document.createElement('div');
