@@ -493,16 +493,72 @@ if (!REDUCED_MOTION) {
   });
 })();
 
-// ── CURSOR GLOW ───────────────────────────────────────────────
+// ── DRAG SCROLL (work gallery) ────────────────────────────────
 
-const glow = document.createElement('div');
-glow.style.cssText = `
-  position:fixed;pointer-events:none;z-index:9999;width:300px;height:300px;
-  border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.06) 0%,transparent 70%);
-  transform:translate(-50%,-50%);transition:opacity .3s;top:0;left:0;
-`;
-document.body.appendChild(glow);
-window.addEventListener('mousemove', e => {
-  glow.style.left = e.clientX + 'px';
-  glow.style.top  = e.clientY + 'px';
-});
+(function initDragScroll() {
+  const el = document.querySelector('.work__grid');
+  if (!el) return;
+  let down = false, startX = 0, sl = 0, moved = false;
+
+  el.addEventListener('mousedown', e => {
+    down = true; moved = false;
+    startX = e.pageX - el.offsetLeft;
+    sl = el.scrollLeft;
+  });
+  document.addEventListener('mouseup', () => { down = false; });
+  el.addEventListener('mousemove', e => {
+    if (!down) return;
+    e.preventDefault();
+    const dx = (e.pageX - el.offsetLeft) - startX;
+    if (Math.abs(dx) > 4) moved = true;
+    el.scrollLeft = sl - dx * 1.4;
+  });
+  // prevent lightbox opening on drag
+  el.addEventListener('click', e => { if (moved) e.stopPropagation(); }, true);
+})();
+
+// ── CUSTOM CURSOR ─────────────────────────────────────────────
+
+(function initCursor() {
+  if (window.matchMedia('(hover: none)').matches) return;
+
+  const ring = document.createElement('div');
+  ring.className = 'cursor';
+  document.body.appendChild(ring);
+
+  const dot = document.createElement('div');
+  dot.className = 'cursor-dot';
+  document.body.appendChild(dot);
+
+  let tx = window.innerWidth / 2, ty = window.innerHeight / 2;
+  let rx = tx, ry = ty;
+
+  window.addEventListener('mousemove', e => {
+    tx = e.clientX; ty = e.clientY;
+    dot.style.transform = `translate(${tx}px,${ty}px)`;
+
+    const hovered = document.elementFromPoint(tx, ty);
+    const isHot = hovered?.closest('a, button, .work__card-inner, .btn, .nav__links a');
+    ring.classList.toggle('cursor--hover', !!isHot);
+  });
+
+  (function animRing() {
+    rx = lerp(rx, tx, 0.13);
+    ry = lerp(ry, ty, 0.13);
+    ring.style.transform = `translate(${rx}px,${ry}px)`;
+    requestAnimationFrame(animRing);
+  })();
+
+  // ambient glow still follows cursor
+  const glow = document.createElement('div');
+  glow.style.cssText = `
+    position:fixed;pointer-events:none;z-index:9996;width:500px;height:500px;
+    border-radius:50%;background:radial-gradient(circle,rgba(201,168,76,.04) 0%,transparent 70%);
+    transform:translate(-50%,-50%);top:0;left:0;will-change:transform;
+  `;
+  document.body.appendChild(glow);
+  window.addEventListener('mousemove', e => {
+    glow.style.left = e.clientX + 'px';
+    glow.style.top  = e.clientY + 'px';
+  });
+})();
