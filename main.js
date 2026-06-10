@@ -1,9 +1,10 @@
 /* ============================================================
    NO DISCIPLINE ART — main.js
-   Three.js 3D scenes + UI interactions
+   Three.js 3D scenes + scroll-driven experience
    ============================================================ */
 
 const THREE = window.THREE;
+const REDUCED_MOTION = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
 // ── Helpers ──────────────────────────────────────────────────
 
@@ -25,6 +26,17 @@ function resizeRenderer(renderer, camera) {
     camera.updateProjectionMatrix();
   }
 }
+
+function lerp(a, b, t) { return a + (b - a) * t; }
+function clamp(v, min, max) { return Math.min(max, Math.max(min, v)); }
+
+// ── Scroll state (shared by all effects) ─────────────────────
+
+let scrollPos = window.scrollY;
+let scrollSmooth = scrollPos;
+let scrollVel = 0;
+
+window.addEventListener('scroll', () => { scrollPos = window.scrollY; }, { passive: true });
 
 // ── HERO SCENE ────────────────────────────────────────────────
 
@@ -103,16 +115,24 @@ function resizeRenderer(renderer, camera) {
     requestAnimationFrame(animate);
     frame += 0.005;
 
-    knot.rotation.x += 0.003;
-    knot.rotation.y += 0.005;
-    wire.rotation.x = knot.rotation.x;
-    wire.rotation.y = knot.rotation.y;
+    // Knot grows, spins faster and pulls back as the hero scrolls away
+    const heroH = canvas.clientHeight || window.innerHeight;
+    const hp = clamp(scrollSmooth / heroH, 0, 1);
+    const s = 1 + hp * 0.45;
+    knot.scale.setScalar(s);
+    wire.scale.setScalar(s);
+
+    knot.rotation.x += 0.003 + hp * 0.006;
+    knot.rotation.y += 0.005 + hp * 0.004;
+    knot.rotation.z = hp * 0.6;
+    wire.rotation.copy(knot.rotation);
 
     camera.position.x += (mx * 0.8 - camera.position.x) * 0.04;
     camera.position.y += (-my * 0.5 - camera.position.y) * 0.04;
+    camera.position.z = 6 + hp * 1.5;
     camera.lookAt(0, 0, 0);
 
-    particles.rotation.y += 0.0008;
+    particles.rotation.y += 0.0008 + hp * 0.002;
     particles.rotation.x += 0.0003;
 
     pointA.position.x = Math.sin(frame) * 4;
@@ -150,10 +170,13 @@ function resizeRenderer(renderer, camera) {
   pt.position.set(3, 3, 3);
   scene.add(pt);
 
+  let t = 0;
   function animate() {
     requestAnimationFrame(animate);
-    mesh.rotation.x += 0.003;
-    mesh.rotation.y += 0.006;
+    t += 0.003;
+    // Scroll drives extra rotation so the object responds to the page
+    mesh.rotation.x = t + scrollSmooth * 0.0008;
+    mesh.rotation.y = t * 2 + scrollSmooth * 0.0012;
     resizeRenderer(renderer, camera);
     renderer.render(scene, camera);
   }
@@ -184,7 +207,8 @@ function resizeRenderer(renderer, camera) {
     transparent: true,
     opacity: 0.6,
   });
-  scene.add(new THREE.Points(geo, mat));
+  const points = new THREE.Points(geo, mat);
+  scene.add(points);
 
   // Grid lines
   const gridHelper = new THREE.GridHelper(80, 40, 0x222222, 0x1a1a1a);
@@ -192,23 +216,97 @@ function resizeRenderer(renderer, camera) {
   gridHelper.position.z = -5;
   scene.add(gridHelper);
 
+  const section = document.getElementById('process');
+
   function animate() {
     requestAnimationFrame(animate);
-    scene.children.forEach(c => {
-      if (c.isPoints) c.rotation.z += 0.0005;
-    });
+    points.rotation.z += 0.0005;
+
+    // Particles drift and camera dollies as the section passes through view
+    if (section) {
+      const r = section.getBoundingClientRect();
+      const p = clamp(1 - r.top / window.innerHeight, 0, 2);
+      points.rotation.y = p * 0.35;
+      camera.position.z = 30 - p * 4;
+    }
+
     resizeRenderer(renderer, camera);
     renderer.render(scene, camera);
   }
   animate();
 })();
 
-// ── NAV SCROLL BEHAVIOUR ──────────────────────────────────────
+// ── MASTER SCROLL LOOP ────────────────────────────────────────
+// Progress bar, hero fade-out, image parallax, marquee skew —
+// all driven from one rAF loop.
+
+const progressBar = document.createElement('div');
+progressBar.className = 'progress-bar';
+document.body.appendChild(progressBar);
+
+const heroContent = document.querySelector('.hero__content');
+const heroScrollHint = document.querySelector('.hero__scroll');
+const heroCanvasEl = document.getElementById('heroCanvas');
+const marqueeEl = document.querySelector('.marquee');
+const parallaxImgs = [...document.querySelectorAll('.work__card-img')];
+
+let lastFrameScroll = scrollPos;
+let marqueeSkew = 0;
+
+function masterLoop() {
+  requestAnimationFrame(masterLoop);
+
+  scrollSmooth = lerp(scrollSmooth, scrollPos, 0.09);
+  scrollVel = scrollPos - lastFrameScroll;
+  lastFrameScroll = scrollPos;
+
+  // Progress bar
+  const total = document.documentElement.scrollHeight - window.innerHeight;
+  if (total > 0) progressBar.style.width = (scrollPos / total * 100) + '%';
+
+  if (REDUCED_MOTION) return;
+
+  // Hero content drifts up and fades as you scroll past it
+  const heroH = window.innerHeight;
+  const hp = clamp(scrollSmooth / heroH, 0, 1);
+  if (heroContent) {
+    heroContent.style.opacity = String(1 - hp * 1.4);
+    heroContent.style.transform = `translateY(${hp * -70}px)`;
+  }
+  if (heroScrollHint) heroScrollHint.style.opacity = String(1 - hp * 3);
+  if (heroCanvasEl) heroCanvasEl.style.transform = `translateY(${scrollSmooth * 0.28}px)`;
+
+  // Marquee skews with scroll velocity
+  marqueeSkew = lerp(marqueeSkew, clamp(scrollVel * 0.45, -9, 9), 0.12);
+  if (marqueeEl) marqueeEl.style.transform = `skewX(${marqueeSkew.toFixed(2)}deg)`;
+
+  // Gallery image parallax — each photo slides inside its frame
+  for (const img of parallaxImgs) {
+    const card = img.closest('.work__card');
+    if (!card) continue;
+    const r = card.getBoundingClientRect();
+    if (r.bottom < 0 || r.top > window.innerHeight) continue;
+    const centerOffset = (r.top + r.height / 2 - window.innerHeight / 2) / window.innerHeight;
+    img.style.setProperty('--py', (centerOffset * 34).toFixed(1) + 'px');
+  }
+}
+masterLoop();
+
+// ── NAV: hide on scroll down, reveal on scroll up ─────────────
 
 const nav = document.getElementById('nav');
+let lastNavY = window.scrollY;
+
 window.addEventListener('scroll', () => {
-  nav.classList.toggle('scrolled', window.scrollY > 60);
-});
+  const y = window.scrollY;
+  nav.classList.toggle('scrolled', y > 60);
+  if (y > lastNavY + 8 && y > 320) {
+    nav.classList.add('nav--hidden');
+  } else if (y < lastNavY - 8) {
+    nav.classList.remove('nav--hidden');
+  }
+  lastNavY = y;
+}, { passive: true });
 
 // ── MOBILE BURGER ─────────────────────────────────────────────
 
@@ -239,12 +337,72 @@ document.querySelectorAll('.menu-link').forEach(link => {
   });
 });
 
+// ── SECTION TITLES: word-by-word reveal ───────────────────────
+
+(function splitTitles() {
+  document.querySelectorAll('.section-title').forEach(title => {
+    const frag = document.createDocumentFragment();
+    let wordIndex = 0;
+
+    [...title.childNodes].forEach(node => {
+      if (node.nodeType === Node.TEXT_NODE) {
+        node.textContent.split(/\s+/).filter(Boolean).forEach((word, i, arr) => {
+          const mask = document.createElement('span');
+          mask.className = 'tw-mask';
+          const inner = document.createElement('span');
+          inner.className = 'tw';
+          inner.textContent = word;
+          inner.style.transitionDelay = (wordIndex * 0.08) + 's';
+          mask.appendChild(inner);
+          frag.appendChild(mask);
+          if (i < arr.length - 1) frag.appendChild(document.createTextNode(' '));
+          wordIndex++;
+        });
+      } else {
+        frag.appendChild(node.cloneNode(true));
+      }
+    });
+
+    title.innerHTML = '';
+    title.appendChild(frag);
+  });
+
+  const titleObserver = new IntersectionObserver(
+    entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('in'); }),
+    { threshold: 0.4 }
+  );
+  document.querySelectorAll('.section-title').forEach(t => titleObserver.observe(t));
+})();
+
+// ── STAT COUNTERS ─────────────────────────────────────────────
+
+document.querySelectorAll('.stat__number').forEach(el => {
+  const node = el.firstChild;
+  if (!node || node.nodeType !== Node.TEXT_NODE) return;
+  const target = parseInt(node.textContent, 10);
+  if (isNaN(target) || REDUCED_MOTION) return;
+
+  const io = new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) return;
+    io.disconnect();
+    const start = performance.now();
+    const dur = 1500;
+    (function tick(now) {
+      const p = clamp((now - start) / dur, 0, 1);
+      node.textContent = String(Math.round(target * (1 - Math.pow(1 - p, 3))));
+      if (p < 1) requestAnimationFrame(tick);
+    })(start);
+  }, { threshold: 0.6 });
+  io.observe(el);
+});
+
 // ── SCROLL REVEAL ─────────────────────────────────────────────
 
 const revealEls = [
   ...document.querySelectorAll('.about__left'),
   ...document.querySelectorAll('.about__right'),
   ...document.querySelectorAll('.stat'),
+  ...document.querySelectorAll('.services__card'),
   ...document.querySelectorAll('.work__card'),
   ...document.querySelectorAll('.process__step'),
   ...document.querySelectorAll('.contact__left'),
@@ -264,47 +422,26 @@ const observer = new IntersectionObserver(
 );
 revealEls.forEach(el => observer.observe(el));
 
-// ── CONTACT FORM ──────────────────────────────────────────────
+// Process connector lines draw in as they enter the viewport
+const lineObserver = new IntersectionObserver(
+  entries => entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('grown'); }),
+  { threshold: 0.5 }
+);
+document.querySelectorAll('.process__line').forEach(l => lineObserver.observe(l));
 
+// ── MAGNETIC BUTTONS ──────────────────────────────────────────
 
-// ── WORKSHOP MAP ──────────────────────────────────────────────
-
-(function initMap() {
-  const el = document.getElementById('workshopMap');
-  if (!el || !window.L) return;
-
-  // Košice city centre
-  const lat = 48.7164, lng = 21.2611;
-
-  const map = L.map(el, {
-    center: [lat, lng],
-    zoom: 14,
-    zoomControl: true,
-    scrollWheelZoom: false,
-    attributionControl: true,
+if (!REDUCED_MOTION) {
+  document.querySelectorAll('.btn').forEach(btn => {
+    btn.addEventListener('mousemove', e => {
+      const r = btn.getBoundingClientRect();
+      const x = e.clientX - r.left - r.width / 2;
+      const y = e.clientY - r.top - r.height / 2;
+      btn.style.transform = `translate(${x * 0.18}px, ${y * 0.3}px)`;
+    });
+    btn.addEventListener('mouseleave', () => { btn.style.transform = ''; });
   });
-
-  // CartoDB Dark Matter tiles — matches the dark site theme
-  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
-    subdomains: 'abcd',
-    maxZoom: 19,
-  }).addTo(map);
-
-  // Custom gold dot marker
-  const icon = L.divIcon({
-    className: '',
-    html: '<div class="map-marker"></div>',
-    iconSize: [14, 14],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -12],
-  });
-
-  L.marker([lat, lng], { icon })
-    .addTo(map)
-    .bindPopup('<strong>NDA Workshop</strong>Košice, Slovakia')
-    .openPopup();
-})();
+}
 
 // ── LIGHTBOX ──────────────────────────────────────────────────
 
@@ -355,6 +492,45 @@ revealEls.forEach(el => observer.observe(el));
     if (e.key === 'ArrowLeft') show(current - 1);
     if (e.key === 'ArrowRight') show(current + 1);
   });
+})();
+
+// ── WORKSHOP MAP ──────────────────────────────────────────────
+
+(function initMap() {
+  const el = document.getElementById('workshopMap');
+  if (!el || !window.L) return;
+
+  // Košice city centre
+  const lat = 48.7164, lng = 21.2611;
+
+  const map = L.map(el, {
+    center: [lat, lng],
+    zoom: 14,
+    zoomControl: true,
+    scrollWheelZoom: false,
+    attributionControl: true,
+  });
+
+  // CartoDB Dark Matter tiles — matches the dark site theme
+  L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+    attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>',
+    subdomains: 'abcd',
+    maxZoom: 19,
+  }).addTo(map);
+
+  // Custom gold dot marker
+  const icon = L.divIcon({
+    className: '',
+    html: '<div class="map-marker"></div>',
+    iconSize: [14, 14],
+    iconAnchor: [7, 7],
+    popupAnchor: [0, -12],
+  });
+
+  L.marker([lat, lng], { icon })
+    .addTo(map)
+    .bindPopup('<strong>NDA Workshop</strong>Košice, Slovakia')
+    .openPopup();
 })();
 
 // ── CURSOR GLOW ───────────────────────────────────────────────
