@@ -402,7 +402,6 @@ const revealEls = [
   ...document.querySelectorAll('.about__left'),
   ...document.querySelectorAll('.about__right'),
   ...document.querySelectorAll('.stat'),
-  ...document.querySelectorAll('.services__card'),
   ...document.querySelectorAll('.work__card'),
   ...document.querySelectorAll('.process__step'),
   ...document.querySelectorAll('.contact__left'),
